@@ -102,7 +102,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .name("Contact_negative_" + i)
                 .lastName("Negative")
                 .email("katy_" + i + "@mail.ru")
-                .phone("12" + i)
+                .phone("12")
                 .address("Netanya")
                 .description("New contact" + i)
                 .build();
