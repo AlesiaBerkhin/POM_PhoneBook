@@ -68,6 +68,14 @@ public class AddNewContactScreen extends BaseScreen{
         Assert.assertTrue(errorTextView.getText().contains(text));
         return this; //chtobi nikyda ne yxodit s ekrana
     }
+    public AddNewContactScreen isErrorMessageContainsTextInAlert(String text){
+        Alert alert = new WebDriverWait(driver, 3)
+                .until(ExpectedConditions.alertIsPresent());
+        driver.switchTo().alert();
+        Assert.assertTrue(alert.getText().contains(text));
+        alert.accept();
+        return this;
+    }
 
 }
 

@@ -4,6 +4,7 @@ import config.AppiumConfig;
 import models.Contact;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 import screens.AddNewContactScreen;
 import screens.AuthenticationScreen;
@@ -16,7 +17,7 @@ public class AddNewContactTests extends AppiumConfig {
 
     int i;
 
-    @BeforeMethod
+    @BeforeSuite
     public void precondition(){
         i = new Random().nextInt(1000) + 1000;
         new SplashScreen(driver)
@@ -26,7 +27,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .submitLogin();
     }
 
-    @Test
+    @Test(invocationCount = 3)
     public void addNewContactPositive(){
         Contact contact = Contact.builder()
                 .name("AddNewContact_" + i)
@@ -39,13 +40,14 @@ public class AddNewContactTests extends AppiumConfig {
         new ContactListScreen(driver)
                 .openContactForm()
                 .fillContactForm(contact)
-                .submitContactForm();
+                .submitContactForm()
+                .isContactAdded(contact);
     }
 
     @Test
     public void addNewContactNegativeName(){
         Contact contact = Contact.builder()
-                .name("")
+                .name("")  // ili mozno prosto zakomentit ety stroky
                 .lastName("Negative")
                 .email("katy_" + i + "@mail.ru")
                 .phone("1234567" + i)
@@ -58,6 +60,23 @@ public class AddNewContactTests extends AppiumConfig {
                 .submitLoginNegative()
                 .isErrorMessageContainsText("blank")
                 .closeErrorTextMessage();
+    }
+
+    @Test
+    public void addNewContactNegativeEmptyName(){ // metod Andrey
+        Contact contact = Contact.builder()
+         //       .name("")  // ili mozno prosto zakomentit ety stroky
+                .lastName("Negative")
+                .email("katy_" + i + "@mail.ru")
+                .phone("1234567" + i)
+                .address("Netanya")
+                .description("New contact" + i)
+                .build();
+        new ContactListScreen(driver)
+                .openContactForm()
+                .fillContactForm(contact)
+                .submitLoginNegative()
+                .isErrorMessageContainsTextInAlert("blank");
     }
 
     @Test
@@ -74,8 +93,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .openContactForm()
                 .fillContactForm(contact)
                 .submitLoginNegative()
-                .isErrorMessageContainsText("blank")
-                .closeErrorTextMessage();
+                .isErrorMessageContainsTextInAlert("blank");
     }
 
     @Test
@@ -92,8 +110,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .openContactForm()
                 .fillContactForm(contact)
                 .submitLoginNegative()
-                .isErrorMessageContainsText("must be a well-formed")
-                .closeErrorTextMessage();
+                .isErrorMessageContainsTextInAlert("must be a well-formed");
     }
 
     @Test
@@ -110,8 +127,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .openContactForm()
                 .fillContactForm(contact)
                 .submitLoginNegative()
-                .isErrorMessageContainsText("Phone number must contain")
-                .closeErrorTextMessage();
+                .isErrorMessageContainsTextInAlert("Phone number must contain");
     }
 
     @Test
@@ -128,8 +144,7 @@ public class AddNewContactTests extends AppiumConfig {
                 .openContactForm()
                 .fillContactForm(contact)
                 .submitLoginNegative()
-                .isErrorMessageContainsText("blank")
-                .closeErrorTextMessage();
+                .isErrorMessageContainsTextInAlert("blank");
     }
 
     @AfterMethod
